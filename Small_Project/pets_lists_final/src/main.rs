@@ -230,7 +230,7 @@ fn add_list() -> Result<(), Error> {
                         };
                         pets.push(new_pet);
                         write_db(&pets)?;
-                        break;
+                        return Ok(());
                     }
                 }
                 KeyCode::Esc => {
@@ -529,7 +529,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut terminal = Terminal::new(backend)?;
     terminal.clear()?;
 
-    loop {
+    'main_loop: loop {
         terminal.draw(|rect| {
             let size = rect.size();
             let chunks = Layout::default()
