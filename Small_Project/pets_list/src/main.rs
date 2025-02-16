@@ -124,6 +124,22 @@ fn delete_pet(id: usize) -> Result<(), Error> {
     Ok(())
 }
 
+fn modify_pet(
+    id: usize,
+    new_name: String,
+    new_category: String,
+    new_age: usize,
+) -> Result<(), Error> {
+    let mut pets = read_db()?;
+    if let Some(pet) = pets.iter_mut().find(|pet| pet.id == id) {
+        pet.name = new_name;
+        pet.category = new_category;
+        pet.age = new_age;
+    }
+    write_db(&pets)?;
+    Ok(())
+}
+
 fn render_pets<'a>(pet_list_state: &ListState) -> (List<'a>, Table<'a>) {
     let pets = Block::default()
         .borders(Borders::ALL)
@@ -210,7 +226,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut pet_list_state = ListState::default();
     pet_list_state.select(Some(0));
 
-    let menu_titles = vec!["Home", "Pets", "Add", "Delete", "Quit"];
+    let menu_titles = vec!["Home", "Pets", "Add", "Delete", "Modify", "Quit"];
     let mut active_menu_item = MenuItem::Home;
     let menu = menu_titles
         .iter()
@@ -324,6 +340,38 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     if let Some(selected) = pet_list_state.selected() {
                         if selected < pets.len() {
                             delete_pet(pets[selected].id).expect("can delete pet");
+                            pet_list_state.select(Some(0));
+                        }
+                    }
+                }
+                KeyCode::Char('m') => {
+                    let pets = read_db().expect("can fetch pet list");
+                    if let Some(selected) = pet_list_state.selected() {
+                        if selected < pets.len() {
+                            let pet = &pets[selected];
+                            println!("Modify pet: {}", pet.name);
+                            println!("Enter new name:");
+                            let mut new_name = String::new();
+                            io::stdin()
+                                .read_line(&mut new_name)
+                                .expect("can read input");
+                            println!("Enter new category:");
+                            let mut new_category = String::new();
+                            io::stdin()
+                                .read_line(&mut new_category)
+                                .expect("can read input");
+                            println!("Enter new age:");
+                            let mut new_age = String::new();
+                            io::stdin().read_line(&mut new_age).expect("can read input");
+                            let new_age: usize = new_age.trim().parse().expect("valid age");
+
+                            modify_pet(
+                                pet.id,
+                                new_name.trim().to_string(),
+                                new_category.trim().to_string(),
+                                new_age,
+                            )
+                            .expect("can modify pet");
                             pet_list_state.select(Some(0));
                         }
                     }
