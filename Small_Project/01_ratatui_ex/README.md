@@ -1,3 +1,8 @@
+# ratatui는 여기에 정리중..
+- https://github.com/YoungHaKim7/rust_TUI_ratatui_Training
+
+<hr />
+
 # ratatui 공식 예시
 
 - https://github.com/ratatui/ratatui/blob/main/examples/README.md
