@@ -99,7 +99,7 @@ fn write_db(pets: &Vec<Pet>) -> Result<(), Error> {
     Ok(())
 }
 
-// fn add_list() -> Result<(), Error> {
+// fn add_random_list() -> Result<(), Error> {
 //     let mut rng = rand::thread_rng();
 //     let mut pets = read_db()?;
 
@@ -243,6 +243,129 @@ fn add_list() -> Result<(), Error> {
 
     Ok(())
 }
+
+// fn add_list() -> Result<bool, Error> {
+//     let mut pets = read_db()?;
+
+//     let mut name = String::new();
+//     let mut category = String::new();
+//     let mut age = String::new();
+//     let mut current_field = 0;
+
+//     fn render_form<'a>(
+//         name: &'a str,
+//         category: &'a str,
+//         age: &'a str,
+//         current_field: usize,
+//     ) -> Paragraph<'a> {
+//         Paragraph::new(vec![
+//             Spans::from(vec![Span::raw("Enter pet details:")]),
+//             Spans::from(vec![
+//                 Span::raw("Name: "),
+//                 Span::styled(
+//                     name,
+//                     if current_field == 0 {
+//                         Style::default().bg(Color::Yellow).fg(Color::Black)
+//                     } else {
+//                         Style::default()
+//                     },
+//                 ),
+//             ]),
+//             Spans::from(vec![
+//                 Span::raw("Category: "),
+//                 Span::styled(
+//                     category,
+//                     if current_field == 1 {
+//                         Style::default().bg(Color::Yellow).fg(Color::Black)
+//                     } else {
+//                         Style::default()
+//                     },
+//                 ),
+//             ]),
+//             Spans::from(vec![
+//                 Span::raw("Age: "),
+//                 Span::styled(
+//                     age,
+//                     if current_field == 2 {
+//                         Style::default().bg(Color::Yellow).fg(Color::Black)
+//                     } else {
+//                         Style::default()
+//                     },
+//                 ),
+//             ]),
+//             Spans::from(vec![Span::raw("Press Enter to submit, Esc to cancel.")]),
+//         ])
+//         .alignment(Alignment::Left)
+//         .block(
+//             Block::default()
+//                 .borders(Borders::ALL)
+//                 .style(Style::default().fg(Color::White))
+//                 .title("Add Pet")
+//                 .border_type(BorderType::Plain),
+//         )
+//     }
+
+//     let stdout = io::stdout();
+//     let backend = CrosstermBackend::new(stdout);
+//     let mut terminal = Terminal::new(backend)?;
+
+//     loop {
+//         terminal.draw(|rect| {
+//             let size = rect.size();
+//             let chunks = Layout::default()
+//                 .direction(Direction::Vertical)
+//                 .margin(2)
+//                 .constraints([Constraint::Percentage(100)].as_ref())
+//                 .split(size);
+
+//             let form = render_form(&name, &category, &age, current_field);
+//             rect.render_widget(form, chunks[0]);
+//         })?;
+
+//         if let CEvent::Key(KeyEvent { code, .. }) = event::read()? {
+//             match code {
+//                 KeyCode::Char(c) => match current_field {
+//                     0 => name.push(c),
+//                     1 => category.push(c),
+//                     2 => age.push(c),
+//                     _ => {}
+//                 },
+//                 KeyCode::Backspace => match current_field {
+//                     0 => {
+//                         name.pop();
+//                     }
+//                     1 => {
+//                         category.pop();
+//                     }
+//                     2 => {
+//                         age.pop();
+//                     }
+//                     _ => {}
+//                 },
+//                 KeyCode::Enter => {
+//                     if current_field < 2 {
+//                         current_field += 1;
+//                     } else {
+//                         let new_pet = Pet {
+//                             id: pets.len() + 1,
+//                             name: name.trim().to_string(),
+//                             category: category.trim().to_string(),
+//                             age: age.trim().parse().unwrap_or(1),
+//                             created_at: Utc::now(),
+//                         };
+//                         pets.push(new_pet);
+//                         write_db(&pets)?;
+//                         return Ok(true); // Return true to indicate success
+//                     }
+//                 }
+//                 KeyCode::Esc => {
+//                     return Ok(false); // Return false to indicate cancellation
+//                 }
+//                 _ => {}
+//             }
+//         }
+//     }
+// }
 
 fn delete_pet(id: usize) -> Result<(), Error> {
     let mut pets = read_db()?;
